@@ -5,6 +5,7 @@
     <title>ddd</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/article.css">
     <script src="js/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
 </head>
@@ -47,6 +48,9 @@
                 <button type="submit" class="btn btn-default">提交</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
+                <li th:if="${session.user!=null}">
+                    <a href="/publish">发布</a>
+                </li>
                 <li th:if="${session.user == null}">
                     <a href="https://github.com/login/oauth/authorize?client_id=0b07d1e9e997cc0425ae&rect_uri=http://8081/callback&scope=user&state=1">登录</a>
                 </li>
@@ -64,5 +68,69 @@
         </div><!-- /.navbar-collapse -->
     </div><!-- /.container-fluid -->
     </nav>
+    <div class="container-fluid main">      <!-- 整个屏幕12份-->
+        <div class="row">
+            <!-- col-..表示在大屏小屏【放大，缩小】等的页面布局，
+                上下都为12，则侧面的去了下面【变为上下布局】，-->
+            <div class="col-lg-9 col-md-12 col-sm-12 col-sm-12">
+                <h2>
+                    <span class="glyphicon glyphicon-list" aria-hidden="true"></span>
+                    文章列表</h2>
+                <hr>
+
+                <div class="media" th:each="article:${paginationDTO.articles}">
+                    <div class="media-left">
+                        <a href="#">
+                            <img class="media-object"
+                                 th:src="${article.user.avatarUrl}" alt="aaa">
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <h4 class="media-heading" th:text="${article.title}"></h4>
+                        <span th:text="${article.description}"></span>
+                        <br>
+                        <span class="text-desc">
+                            <span th:text="${article.commentCount}"/>个回复·
+                            <span th:text="${article.viewCount}"/>次浏览·
+                            <span th:text="${#dates.format(article.gmtCreate,'yyyy-MM-dd HH:mm')}"/>
+                        </span>
+                    </div>
+                </div>
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li th:if="${paginationDTO.showFirstPage}">
+                            <a href="/?page=1" aria-label="Previous">
+                                <span aria-hidden="true">&lt;&lt;</span>
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.showPrevious}">
+                            <a th:href="@{/(page=${paginationDTO.page -1})}" aria-label="Previous">
+                                <span aria-hidden="true">&lt;</span>
+                            </a>
+                        </li>
+
+                        <li th:each="page:${paginationDTO.pages}" th:class="${paginationDTO.page==page}?'active':''">
+                            <a th:href="@{/(page=${page})}" th:text="${page}"></a>
+                        </li>
+
+                        <li th:if="${paginationDTO.showNext}">
+                            <a th:href="@{/(page=${paginationDTO.page+1})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt</span>
+                            </a>
+                        </li>
+                        <li th:if="${paginationDTO.showEndPage}">
+                            <a th:href="@{/(page=${paginationDTO.totalPage})}" aria-label="Previous">
+                                <span aria-hidden="true">&gt&gt</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <div class="col-lg-3 col-md-12 col-sm-12 col-sm-12">
+                <h3>公告栏</h3>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

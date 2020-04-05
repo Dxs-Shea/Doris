@@ -7,8 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GithubUser {
+public class GithubUserDTO {
     private String name;
     private Long id;
     private String bio;
+    private String avatarUrl;
 }
